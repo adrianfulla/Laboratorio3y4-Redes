@@ -8,21 +8,36 @@ import (
 	"github.com/adrianfulla/Proyecto1-Redes/server/xmpp"
 	xmppfunctions "github.com/adrianfulla/Proyecto1-Redes/server/xmpp-functions"
 	"fyne.io/fyne/v2"
+	"path/filepath"
 )
 
 func CreateNetwork() routing.Network{
 
-	topologyFile := "topo-example.txt"
-	namesFile := "names-example.txt"
-
-	topology, err := routing.ParseTopologyFile(topologyFile)
-	if err != nil {
-		log.Fatalf("Error parsing topology file: %v", err)
+	topologyFiles, err := filepath.Glob("topo-*.txt")
+	if err != nil || len(topologyFiles) == 0 {
+		log.Fatalf("Error finding topology files: %v", err)
 	}
 
-	names, err := routing.ParseNamesFile(namesFile)
-	if err != nil {
-		log.Fatalf("Error parsing names file: %v", err)
+	namesFiles, err := filepath.Glob("names-*.txt")
+	if err != nil || len(namesFiles) == 0 {
+		log.Fatalf("Error finding names files: %v", err)
+	}
+
+	var topology *routing.Topology
+	var names *routing.Names
+
+	if len(topologyFiles) > 0 {
+		topology, err = routing.ParseTopologyFile(topologyFiles[0])
+		if err != nil {
+			log.Fatalf("Error parsing topology file: %v", err)
+		}
+	}
+
+	if len(namesFiles) > 0 {
+		names, err = routing.ParseNamesFile(namesFiles[0])
+		if err != nil {
+			log.Fatalf("Error parsing names file: %v", err)
+		}
 	}
 
 	network, err := routing.BuildNetwork(topology, names)
@@ -33,16 +48,6 @@ func CreateNetwork() routing.Network{
 		fmt.Printf("Node ID: %s, Username: %s, Neighbors: %v\n", nodeID, node.Username, node.Neighbors)
 	}
 	return *network
-}
-
-func SendUsingFlooding(handler *xmpp.XMPPHandler, recepient string, message string, routingTable routing.Network) error{
-	return nil
-}
-func SendUsingLinkState(handler *xmpp.XMPPHandler, recepient string, message string, routingTable routing.Network) error{
-	return nil
-}
-func SendUsingDistanceVector(handler *xmpp.XMPPHandler, recepient string, message string, routingTable routing.Network) error{
-	return nil
 }
 
 

@@ -45,6 +45,7 @@ func (lsr *LinkStateRouting) ProcessIncomingMessage(nodeID string, message *Mess
 		}
 	}
 	messages := make(map[*string]*Message)
+	message.Headers = append(message.Headers,map[string]string{"visited":nodeID})
 	if recepientNodeID == nodeID {
 		fmt.Printf("Message arrived at destination: %s\n", message.Payload)
 		messages[nil] = message
@@ -60,4 +61,8 @@ func (lsr *LinkStateRouting) ProcessIncomingMessage(nodeID string, message *Mess
 		}
 	}
 	return messages, nil
+}
+
+func (lsr *LinkStateRouting) Name()string {
+	return "link state routing"
 }

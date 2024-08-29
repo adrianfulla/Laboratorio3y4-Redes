@@ -76,6 +76,7 @@ func (dvr *DistanceVectorRouting) ProcessIncomingMessage(nodeID string, message 
 		}
 	}
 	messages := make(map[*string]*Message)
+	message.Headers = append(message.Headers,map[string]string{"visited":nodeID})
 	if recipientNodeID == nodeID {
 		fmt.Printf("Message arrived at destination: %s\n", message.Payload)
 		messages[nil] = message
@@ -91,4 +92,9 @@ func (dvr *DistanceVectorRouting) ProcessIncomingMessage(nodeID string, message 
 		}
 	}
 	return messages, nil
+}
+
+
+func (dvr *DistanceVectorRouting) Name() string{
+	return "distance Vector Routing"
 }

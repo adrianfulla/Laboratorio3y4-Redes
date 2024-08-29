@@ -24,6 +24,7 @@ func (msg *Message) SerializeMessage()(string, error){
 }
 
 type RoutingAlgorithm interface {
+	Name() string
     Initialize(network *Network)            // Initialize the routing algorithm with the network topology
     GetNextHop(source, destination string) (string, error)  // Get the next hop for a message from source to destination
     ProcessIncomingMessage(nodeID string, message *Message) (map[*string]*Message, error)// Handle incoming messages at a node

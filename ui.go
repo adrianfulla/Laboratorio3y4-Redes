@@ -110,7 +110,7 @@ func ShowChatWindow(app fyne.App, handler *xmpp.XMPPHandler, recipient string, c
                 Headers: []map[string]string{},
                 Payload: message,
             }
-            
+            msg.Headers = append(msg.Headers,map[string]string{"algorithm":routingTable.Algorithm.Name()})
             // Use the selected routing algorithm to handle the message
             messages, err := routingTable.Algorithm.ProcessIncomingMessage(nodeID, msg)
             if err != nil{
@@ -412,11 +412,23 @@ func ShowNodesWindow(app fyne.App, handler *xmpp.XMPPHandler, routingTable routi
         }
         nodeList.UpdateItem = func(i widget.ListItemID, o fyne.CanvasObject) {
             nodeName := nodes[i]
-            if nodeName == userNode {
-                o.(*widget.Label).SetText(fmt.Sprintf("%s (You)", nodeName))
-            } else {
-                o.(*widget.Label).SetText(nodeName)
+            queuedMessages := 0
+            
+            if node, exists := routingTable.Nodes[nodeName]; exists {
+                jid := node.Username
+                if msgs, ok := handler.MessageQueue[jid]; ok {
+                    queuedMessages = len(msgs)
+                }
             }
+            displayText := nodeName
+            if nodeName == userNode {
+                displayText += " (You)"
+            } else {
+                if queuedMessages > 0{
+                    displayText = fmt.Sprintf("%s (%d)", displayText, queuedMessages)
+                }
+            }
+            o.(*widget.Label).SetText(displayText)
         }
         nodeList.Refresh()
     }
@@ -487,9 +499,7 @@ func ShowNodesWindow(app fyne.App, handler *xmpp.XMPPHandler, routingTable routi
         }
     }()
 
-    handler.ListenForIncomingStanzas()
-
-    
+    handler.ListenForIncomingStanzas()   
 }
 
  
