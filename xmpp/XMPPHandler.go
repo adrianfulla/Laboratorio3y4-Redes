@@ -123,6 +123,7 @@ func (h *XMPPHandler) HandleIncomingStanzas() error {
                     log.Printf("Failed to parse message: %v", err)
                     continue
                 }
+                fmt.Println("Obtained message", msg)
                 h.DispatchMessage(&msg)
 
 			case "presence":
@@ -383,26 +384,28 @@ func (h *XMPPHandler) ListenForIncomingStanzas() {
 }
 
 func (h *XMPPHandler) DispatchMessage(msg *Message) {
-    recipient := strings.Split(msg.From, "/")[0]
+    // recipient := strings.Split(msg.From, "/")[0]
 
-    if chatWindow, ok := h.ChatWindows[recipient]; ok && chatWindow != nil {
-        chatWindow.AddMessage(msg)
-        fyne.CurrentApp().SendNotification(&fyne.Notification{
-            Title:   "New Message",
-            Content: fmt.Sprintf("%s: %s", recipient, msg.Body),
-        })
-    } else {
-        if len(msg.Body) > 0 {
-            log.Printf("No chat window open for %s, queueing message", recipient)
-            h.MessageQueue[recipient] = append(h.MessageQueue[recipient], msg)
+    // if chatWindow, ok := h.ChatWindows[recipient]; ok && chatWindow != nil {
+    //     chatWindow.AddMessage(msg)
+    //     fyne.CurrentApp().SendNotification(&fyne.Notification{
+    //         Title:   "New Message",
+    //         Content: fmt.Sprintf("%s: %s", recipient, msg.Body),
+    //     })
+    // } else {
+    //     if len(msg.Body) > 0 {
+    //         log.Printf("No chat window open for %s, queueing message", recipient)
+    //         h.MessageQueue[recipient] = append(h.MessageQueue[recipient], msg)
             
-            // Send notification for each queued message
-            fyne.CurrentApp().SendNotification(&fyne.Notification{
-                Title:   "New Message",
-                Content: fmt.Sprintf("%s: %s", recipient, msg.Body),
-            })
-        }
-    }
+    //         // Send notification for each queued message
+    //         fyne.CurrentApp().SendNotification(&fyne.Notification{
+    //             Title:   "New Message",
+    //             Content: fmt.Sprintf("%s: %s", recipient, msg.Body),
+    //         })
+    //     }
+    // }
+    fmt.Println("Obtained message: ", msg)
+    h.MessageChan <- msg
 }
 
 

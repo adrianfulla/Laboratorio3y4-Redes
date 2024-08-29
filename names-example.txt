@@ -1,9 +1,11 @@
 {
    "type":"names",
    "config":{
-      "A":"foo@alumchat.lol",
-      "B":"bar@alumchat.lol",
-      "C":"car@alumchat.lol",
-      "D":"dolar@alumchat.lol"
+      "A": "aa-test123@alumchat.lol",
+      "B": "aa-test3@alumchat.lol",
+      "C": "aa-testC@alumchat.lol",
+      "D": "aa-testD@alumchat.lol",
+      "E": "aa-testE@alumchat.lol",
+      "F": "aa-testF@alumchat.lol"
    }
 }

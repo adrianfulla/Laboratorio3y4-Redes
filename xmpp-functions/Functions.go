@@ -2,6 +2,7 @@ package xmppfunctions
 
 import (
 	"encoding/xml"
+    // "encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -10,6 +11,8 @@ import (
 	"sync"
 
 	"github.com/adrianfulla/Proyecto1-Redes/server/xmpp"
+    // "github.com/adrianfulla/Laboratorio3y4-Redes/routing"    
+
 )
 
 // CreateUser creates a new account on the XMPP server.
@@ -255,12 +258,12 @@ func SendFile(handler *xmpp.XMPPHandler, to, filePath string) error {
 }
 
 // ReceiveMessages handles incoming messages and stanzas.
-func ReceiveMessages(handler *xmpp.XMPPHandler) (string, error) {
+func ReceiveMessages(handler *xmpp.XMPPHandler) error {
     // The HandleIncomingStanzas now returns on errors, so we use it in a loop.
     for {
         err := handler.HandleIncomingStanzas()
         if err != nil {
-            return "", err
+            return err
         }
     }
 }
@@ -307,3 +310,5 @@ type vCardQuery struct {
     Nickname string  `xml:"NICKNAME,omitempty"`
     Email    string  `xml:"EMAIL>USERID,omitempty"`
 }
+
+
